@@ -32,6 +32,10 @@ interface AppState {
   registrationModalOpen: boolean;
   setRegistrationModalOpen: (open: boolean) => void;
 
+  // Auth modal
+  authModalOpen: boolean;
+  setAuthModalOpen: (open: boolean) => void;
+
   // Demo mode
   demoMode: 'family' | 'worker' | null;
   setDemoMode: (mode: 'family' | 'worker' | null) => void;
@@ -83,6 +87,9 @@ export const useAppStore = create<AppState>((set) => ({
 
   registrationModalOpen: false,
   setRegistrationModalOpen: (open) => set({ registrationModalOpen: open }),
+
+  authModalOpen: false,
+  setAuthModalOpen: (open) => set({ authModalOpen: open }),
 
   demoMode: null,
   setDemoMode: (mode) => set({ demoMode: mode }),

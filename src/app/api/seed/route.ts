@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
+import { hash } from 'bcryptjs';
 import { db } from '@/lib/db';
 
 export async function POST() {
   try {
-    // Clear existing data
+    // Clear existing data (order matters due to relations)
     await db.review.deleteMany();
     await db.attendance.deleteMany();
     await db.salaryRecord.deleteMany();
     await db.jobApplication.deleteMany();
     await db.booking.deleteMany();
+    await db.user.deleteMany();
     await db.employer.deleteMany();
     await db.worker.deleteMany();
 
@@ -30,6 +32,28 @@ export async function POST() {
         data: { name: 'Meera Krishnan', phone: '9876543214', email: 'meera@email.com', city: 'Chennai', locality: 'Adyar', plan: 'basic' },
       }),
     ]);
+
+    // Create demo admin and family users
+    await db.user.create({
+      data: {
+        name: 'GharSeva Admin',
+        email: 'admin@gharseva.in',
+        password: await hash('admin123', 12),
+        role: 'admin',
+        isVerified: true,
+      },
+    });
+    await db.user.create({
+      data: {
+        name: 'Priya Sharma',
+        email: 'family@gharseva.in',
+        password: await hash('family123', 12),
+        phone: '9876543210',
+        role: 'employer',
+        isVerified: true,
+        employerId: employers[0].id,
+      },
+    });
 
     // Create workers with rich data
     const workersData = [
@@ -71,6 +95,19 @@ export async function POST() {
         })
       )
     );
+
+    // Create worker user (after workers exist)
+    await db.user.create({
+      data: {
+        name: 'Sunita Devi',
+        email: 'worker@gharseva.in',
+        password: await hash('worker123', 12),
+        phone: '9812345001',
+        role: 'worker',
+        isVerified: true,
+        workerId: workers[0].id,
+      },
+    });
 
     // Create reviews
     const reviewComments = [
@@ -178,6 +215,7 @@ export async function POST() {
       success: true, 
       workersCreated: workers.length,
       employersCreated: employers.length,
+      usersCreated: 3,
     });
   } catch (error) {
     console.error('Error seeding database:', error);

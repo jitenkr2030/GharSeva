@@ -7,6 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  password      String
+  phone         String?
+  role          String   @default("employer") // employer, worker, admin
+  avatar        String?
+  isVerified    Boolean  @default(false)
+  workerId      String?  @unique
+  employerId    String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  worker        Worker?  @relation(fields: [workerId], references: [id])
+  employer      Employer? @relation(fields: [employerId], references: [id])
+}
+
 model Worker {
   id                 String   @id @default(cuid())
   name               String
@@ -15,16 +33,16 @@ model Worker {
   age                Int?
   gender             String   @default("female")
   profileImage       String?
-  role               String   // housemaid, cook, babysitter, elderly_caregiver, driver, security_guard, gardener, cleaner, laundry_helper, home_attendant
-  roles              String   @default("[]") // JSON array of roles
+  role               String
+  roles              String   @default("[]")
   city               String
   locality           String?
   pincode            String?
   experienceYears    Int      @default(0)
-  salaryExpectation  Int?     // monthly in INR
-  availabilityType   String   @default("full-time") // full-time, part-time, live-in
-  languages          String   @default("[]") // JSON array
-  skills             String   @default("[]") // JSON array
+  salaryExpectation  Int?
+  availabilityType   String   @default("full-time")
+  languages          String   @default("[]")
+  skills             String   @default("[]")
   about              String?
   aadhaarVerified    Boolean  @default(false)
   policeVerified     Boolean  @default(false)
@@ -40,6 +58,7 @@ model Worker {
   attendances    Attendance[]
   salaryRecords  SalaryRecord[]
   applications   JobApplication[]
+  user           User?
 }
 
 model Employer {
@@ -50,22 +69,23 @@ model Employer {
   city         String
   locality     String?
   pincode      String?
-  plan         String   @default("free") // free, basic, premium, enterprise
+  plan         String   @default("free")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   bookings     Booking[]
   reviews      Review[]
+  user         User?
 }
 
 model Booking {
   id           String   @id @default(cuid())
   workerId     String
   employerId   String
-  status       String   @default("pending") // pending, active, completed, cancelled
+  status       String   @default("pending")
   startDate    DateTime
   endDate      DateTime?
-  salary       Int?     // monthly in INR
+  salary       Int?
   notes        String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -78,7 +98,7 @@ model Review {
   id           String   @id @default(cuid())
   workerId     String
   employerId   String
-  rating       Int      // 1-5
+  rating       Int
   comment      String?
   createdAt    DateTime @default(now())
 
@@ -89,10 +109,10 @@ model Review {
 model Attendance {
   id           String   @id @default(cuid())
   workerId     String
-  date         String   // YYYY-MM-DD
-  checkIn      String?  // HH:mm
-  checkOut     String?  // HH:mm
-  status       String   @default("present") // present, absent, leave, half-day
+  date         String
+  checkIn      String?
+  checkOut     String?
+  status       String   @default("present")
   notes        String?
   createdAt    DateTime @default(now())
 
@@ -102,10 +122,10 @@ model Attendance {
 model SalaryRecord {
   id           String   @id @default(cuid())
   workerId     String
-  month        String   // YYYY-MM
+  month        String
   amount       Int
   paidOn       DateTime?
-  status       String   @default("pending") // pending, paid, overdue
+  status       String   @default("pending")
   createdAt    DateTime @default(now())
 
   worker       Worker   @relation(fields: [workerId], references: [id])
@@ -118,7 +138,7 @@ model JobApplication {
   employerName String?
   city         String
   salary       Int?
-  status       String   @default("applied") // applied, interview, offered, rejected, accepted
+  status       String   @default("applied")
   appliedAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

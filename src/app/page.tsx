@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useAppStore } from '@/store/app-store';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
@@ -13,6 +14,11 @@ import AIToolsSection from '@/components/ai-tools-section';
 
 export default function Home() {
   const { currentView } = useAppStore();
+
+  useEffect(() => {
+    // Seed database on first load
+    fetch('/api/seed').catch(() => {});
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
