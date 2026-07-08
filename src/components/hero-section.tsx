@@ -7,8 +7,9 @@ import {
   Shield, Search, Star, Users, ArrowRight, CheckCircle2,
   Home, ChefHat, Baby, HeartPulse, Car, ShieldCheck, TreePine, Sparkles, Shirt, Building,
 } from 'lucide-react';
-import { ROLE_LABELS, ROLE_ICONS } from '@/types';
+import { ROLE_LABELS, ROLE_ICONS, CITIES } from '@/types';
 import { motion } from 'framer-motion';
+import { MapPin } from 'lucide-react';
 
 const roles = [
   { key: 'housemaid', icon: Home },
@@ -116,6 +117,18 @@ export default function HeroSection() {
         </div>
       </section>
 
+      {/* Cities We Serve - Marquee */}
+      <section className="border-y bg-card py-3 overflow-hidden">
+        <div className="flex items-center gap-8 animate-marquee whitespace-nowrap">
+          {[...CITIES, ...CITIES, ...CITIES].map((city, i) => (
+            <span key={`${city}-${i}`} className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin className="h-3.5 w-3.5 text-primary/60" />
+              {city}
+            </span>
+          ))}
+        </div>
+      </section>
+
       {/* Service Categories */}
       <section className="container mx-auto px-4 py-14">
         <div className="text-center mb-10">
@@ -202,6 +215,129 @@ export default function HeroSection() {
               <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-muted/40 py-14">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold">Trusted by Thousands of Families</h2>
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base max-w-2xl mx-auto">
+              Real stories from families who found reliable domestic help through GharSeva.
+            </p>
+          </div>
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-50px' }}
+            className="grid md:grid-cols-3 gap-4 sm:gap-6"
+          >
+            {[
+              { name: 'Anjali Mehta', location: 'Mumbai, Andheri', role: 'Housemaid', quote: 'We were skeptical about hiring online, but GharSeva\'s verification process gave us confidence. Sunita has been with us for 8 months now and she\'s like family. The attendance tracking feature is a game-changer.', rating: 5 },
+              { name: 'Rahul Verma', location: 'Delhi, Saket', role: 'Babysitter', quote: 'Finding a trustworthy babysitter for our 2-year-old was stressful. GharSeva matched us with Geeta who is patient, caring, and CPR certified. The digital contract gave us legal clarity we never had before.', rating: 5 },
+              { name: 'Revathi Krishnan', location: 'Chennai, Adyar', role: 'Cook', quote: 'Lakshmi from GharSeva is an incredible cook. The salary estimator helped us agree on fair pay upfront — no awkward negotiations. The review system keeps everyone accountable and professional.', rating: 5 },
+              { name: 'Amit Patel', location: 'Bangalore, Whitefield', role: 'Driver', quote: 'Our corporate driver Ram Singh is always on time and knows every route in Bangalore. The police verification and Aadhaar check gave us complete peace of mind before hiring.', rating: 4 },
+              { name: 'Sunita Jha', location: 'Pune, Kothrud', role: 'Elderly Caregiver', quote: 'We needed someone experienced for my 80-year-old father. Shanti Bai from GharSeva has been a blessing — she handles his medication, physiotherapy support, and keeps him cheerful.', rating: 5 },
+              { name: 'Fatima Khan', location: 'Hyderabad, Banjara Hills', role: 'Gardener', quote: 'Venkatesh transformed our garden completely. His knowledge of seasonal plants and irrigation systems is remarkable. The platform made it easy to find such specialized talent.', rating: 5 },
+            ].map((t) => (
+              <motion.div
+                key={t.name}
+                variants={item}
+                className="rounded-xl border bg-card p-5 sm:p-6 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star
+                      key={s}
+                      className={`h-4 w-4 ${s <= t.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">&ldquo;{t.quote}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.location} &bull; Hired {t.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Expansion Services - Coming Soon */}
+      <section className="container mx-auto px-4 py-14">
+        <div className="text-center mb-10">
+          <Badge variant="secondary" className="mb-3">Coming Soon</Badge>
+          <h2 className="text-2xl sm:text-3xl font-bold">Expanding Into a Full Home Services Ecosystem</h2>
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base max-w-2xl mx-auto">
+            Once our core platform gains traction, we&apos;re adding these high-demand services to create a one-stop solution for all home needs.
+          </p>
+        </div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-50px' }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4"
+        >
+          {[
+            { icon: '🔧', label: 'Appliance Repair' },
+            { icon: '⚡', label: 'Electricians' },
+            { icon: '🚿', label: 'Plumbers' },
+            { icon: '🚗', label: 'Car Washing' },
+            { icon: '🐛', label: 'Pest Control' },
+            { icon: '✨', label: 'Deep Cleaning' },
+            { icon: '🏥', label: 'Home Nursing' },
+            { icon: '🐾', label: 'Pet Care' },
+            { icon: '📚', label: 'Tutors' },
+          ].map((service) => (
+            <motion.div
+              key={service.label}
+              variants={item}
+              className="flex flex-col items-center gap-2 rounded-xl border border-dashed p-4 sm:p-5 opacity-75 hover:opacity-100 transition-opacity"
+            >
+              <span className="text-2xl sm:text-3xl">{service.icon}</span>
+              <span className="text-xs sm:text-sm font-medium text-center">{service.label}</span>
+              <Badge variant="outline" className="text-[10px] text-muted-foreground">Coming Soon</Badge>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* Competitive Advantage */}
+      <section className="bg-muted/40 py-14">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold">Why GharSeva Wins</h2>
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base max-w-2xl mx-auto">
+              Many platforms focus on urban, premium services. We&apos;re different.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {[
+              { title: 'Fast Verification', desc: 'Complete Aadhaar + police verification in under 48 hours, not weeks. Our streamlined process respects everyone\'s time.' },
+              { title: 'Reliable Replacements', desc: 'If a worker doesn\'t work out, we guarantee a replacement within 48 hours — no questions asked, no extra charges.' },
+              { title: 'Transparent Salary Guidance', desc: 'AI-powered salary estimator based on city, role, and experience ensures fair pay for workers and budget clarity for families.' },
+              { title: 'Worker Skill Development', desc: 'Free training courses in housekeeping, childcare, elderly care, and cooking help workers grow their careers and earning potential.' },
+              { title: 'Local Language Support', desc: 'Break language barriers with our built-in translator supporting Hindi, Tamil, Telugu, Bengali, and 10+ Indian languages.' },
+              { title: 'Digital Employment Records', desc: 'Workers build a verified, portable work history — ratings, attendance, certificates — that follows them across jobs.' },
+            ].map((item) => (
+              <div key={item.title} className="flex gap-3 p-3">
+                <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-sm font-semibold mb-0.5">{item.title}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

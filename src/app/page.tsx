@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useAppStore } from '@/store/app-store';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
@@ -15,20 +14,10 @@ import AIToolsSection from '@/components/ai-tools-section';
 export default function Home() {
   const { currentView } = useAppStore();
 
-  // Seed database on first load
-  useEffect(() => {
-    fetch('/api/seed', { method: 'POST' }).catch(() => {});
-  }, []);
-
-  // Scroll to top on view change
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentView]);
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1" key={currentView}>
         {currentView === 'home' && <HeroSection />}
         {currentView === 'browse' && <BrowseWorkers />}
         {currentView === 'worker-detail' && <WorkerDetail />}

@@ -1,11 +1,12 @@
 'use client';
 
-import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import { useAppStore } from '@/store/app-store';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import {
   Menu, Home, Search, Users, CreditCard, LayoutDashboard, Sparkles, Shield,
+  Sun, Moon,
 } from 'lucide-react';
 
 const navItems = [
@@ -19,6 +20,7 @@ const navItems = [
 
 export default function Navbar() {
   const { currentView, setView, mobileMenuOpen, setMobileMenuOpen, setDemoMode } = useAppStore();
+  const { theme, setTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -52,8 +54,18 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* CTA + Mobile Menu */}
+        {/* CTA + Dark Mode + Mobile Menu */}
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="hidden sm:inline-flex"
+            aria-label="Toggle theme"
+          >
+            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          </Button>
           <Button
             size="sm"
             className="hidden sm:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
@@ -88,7 +100,17 @@ export default function Navbar() {
                     {item.label}
                   </button>
                 ))}
-                <div className="mt-4 px-3">
+                <div className="mt-4 px-3 space-y-2">
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  >
+                    <Sun className="h-4 w-4 dark:hidden" />
+                    <Moon className="h-4 w-4 hidden dark:inline" />
+                    <span className="dark:hidden">Dark Mode</span>
+                    <span className="hidden dark:inline">Light Mode</span>
+                  </Button>
                   <Button
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                     onClick={() => setView('browse')}
