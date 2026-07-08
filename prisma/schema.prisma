@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Worker {
+  id                 String   @id @default(cuid())
+  name               String
+  phone              String
+  email              String?
+  age                Int?
+  gender             String   @default("female")
+  profileImage       String?
+  role               String   // housemaid, cook, babysitter, elderly_caregiver, driver, security_guard, gardener, cleaner, laundry_helper, home_attendant
+  roles              String   @default("[]") // JSON array of roles
+  city               String
+  locality           String?
+  pincode            String?
+  experienceYears    Int      @default(0)
+  salaryExpectation  Int?     // monthly in INR
+  availabilityType   String   @default("full-time") // full-time, part-time, live-in
+  languages          String   @default("[]") // JSON array
+  skills             String   @default("[]") // JSON array
+  about              String?
+  aadhaarVerified    Boolean  @default(false)
+  policeVerified     Boolean  @default(false)
+  rating             Float    @default(0)
+  reviewCount        Int      @default(0)
+  isPremium          Boolean  @default(false)
+  isAvailable        Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  reviews        Review[]
+  bookings       Booking[]
+  attendances    Attendance[]
+  salaryRecords  SalaryRecord[]
+  applications   JobApplication[]
+}
+
+model Employer {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String
+  email        String?
+  city         String
+  locality     String?
+  pincode      String?
+  plan         String   @default("free") // free, basic, premium, enterprise
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings     Booking[]
+  reviews      Review[]
+}
+
+model Booking {
+  id           String   @id @default(cuid())
+  workerId     String
+  employerId   String
+  status       String   @default("pending") // pending, active, completed, cancelled
+  startDate    DateTime
+  endDate      DateTime?
+  salary       Int?     // monthly in INR
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  worker       Worker   @relation(fields: [workerId], references: [id])
+  employer     Employer @relation(fields: [employerId], references: [id])
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  workerId     String
+  employerId   String
+  rating       Int      // 1-5
+  comment      String?
+  createdAt    DateTime @default(now())
+
+  worker       Worker   @relation(fields: [workerId], references: [id])
+  employer     Employer @relation(fields: [employerId], references: [id])
+}
+
+model Attendance {
+  id           String   @id @default(cuid())
+  workerId     String
+  date         String   // YYYY-MM-DD
+  checkIn      String?  // HH:mm
+  checkOut     String?  // HH:mm
+  status       String   @default("present") // present, absent, leave, half-day
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  worker       Worker   @relation(fields: [workerId], references: [id])
+}
+
+model SalaryRecord {
+  id           String   @id @default(cuid())
+  workerId     String
+  month        String   // YYYY-MM
+  amount       Int
+  paidOn       DateTime?
+  status       String   @default("pending") // pending, paid, overdue
+  createdAt    DateTime @default(now())
+
+  worker       Worker   @relation(fields: [workerId], references: [id])
+}
+
+model JobApplication {
+  id           String   @id @default(cuid())
+  workerId     String
+  jobTitle     String
+  employerName String?
+  city         String
+  salary       Int?
+  status       String   @default("applied") // applied, interview, offered, rejected, accepted
+  appliedAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  worker       Worker   @relation(fields: [workerId], references: [id])
+}
