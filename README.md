@@ -80,7 +80,7 @@ Every worker on GharSeva undergoes **Aadhaar verification** and **police backgro
 | **Language** | TypeScript 5 |
 | **Styling** | Tailwind CSS 4 + tw-animate-css |
 | **UI Components** | shadcn/ui (Radix UI primitives) |
-| **Database** | SQLite via Prisma ORM 6 |
+| **Database** | PostgreSQL via Prisma ORM 6 (Neon/Vercel Postgres/Supabase) |
 | **Authentication** | NextAuth.js 4 (Credentials Provider) |
 | **State Management** | Zustand 5 |
 | **Data Fetching** | TanStack React Query 5 |
@@ -164,8 +164,9 @@ gharseva/
 
 - **Node.js** 18+ or **Bun** 1.0+
 - **npm** or **bun** package manager
+- **PostgreSQL database** (Neon, Supabase, Vercel Postgres, or any PostgreSQL provider)
 
-### Installation
+### Local Development
 
 1. **Clone the repository:**
    ```bash
@@ -189,20 +190,50 @@ gharseva/
    openssl rand -base64 32
    ```
 
-4. **Initialize the database:**
+4. **Set up a PostgreSQL database** (pick one):
+   - **[Neon](https://neon.tech)** — Free serverless PostgreSQL (recommended)
+   - **[Supabase](https://supabase.com)** — Free PostgreSQL with dashboard
+   - **[Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres)** — Built into Vercel
+   - **Local PostgreSQL** — `postgres://user:password@localhost:5432/gharseva`
+
+   Set your `DATABASE_URL` and `DIRECT_DATABASE_URL` in `.env`:
+   ```env
+   DATABASE_URL="postgresql://user:password@ep-xxx.region.aws.neon.tech/gharseva?sslmode=require&pgbouncer=true&connect_timeout=15"
+   DIRECT_DATABASE_URL="postgresql://user:password@ep-xxx.region.aws.neon.tech/gharseva?sslmode=require"
+   ```
+
+5. **Initialize the database:**
    ```bash
    npx prisma db push
    npx prisma generate
    ```
 
-5. **Start the development server:**
+6. **Start the development server:**
    ```bash
    npm run dev
    # or
    bun run dev
    ```
 
-6. **Open [http://localhost:3000](http://localhost:3000)** — The database will auto-seed with demo data on first load.
+7. **Open [http://localhost:3000](http://localhost:3000)** — The database will auto-seed with demo data on first load.
+
+### Deploy to Vercel
+
+1. **Push to GitHub** and import the repo in [Vercel Dashboard](https://vercel.com/new).
+
+2. **Add a PostgreSQL database:**
+   - Go to **Storage** > **Create** > **Postgres** (Vercel Postgres)
+   - Or connect an external Neon/Supabase database
+
+3. **Set environment variables** in Vercel project settings:
+   | Variable | Description |
+   |----------|-------------|
+   | `DATABASE_URL` | PostgreSQL connection (with pgbouncer) |
+   | `DIRECT_DATABASE_URL` | PostgreSQL direct connection (for migrations) |
+   | `NEXTAUTH_SECRET` | Generate with `openssl rand -base64 32` |
+   | `NEXTAUTH_URL` | Your Vercel app URL (e.g. `https://gharseva.vercel.app`) |
+
+4. **Deploy** — Vercel will auto-detect Next.js and build. After deployment, visit `/api/seed` to seed the database with demo data.
 
 ### Available Scripts
 
